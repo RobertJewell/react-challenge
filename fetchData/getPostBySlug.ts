@@ -7,7 +7,7 @@ export const getPostBySlug = async (slug: string) => {
   const querySnapshot = await getDocs(q);
 
   const place = querySnapshot.docs.map((doc) => {
-    return doc.data();
+    return doc.data() as any;
   });
 
   return place.length === 1 ? place[0] : null;

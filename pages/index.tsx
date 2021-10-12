@@ -28,6 +28,15 @@ const Index = ({
           />
         )}
         {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+
+        <div className="flex mb-16">
+          <div
+            className="inline-block px-8 py-3 mx-auto text-white bg-black rounded-md cursor-pointer"
+            onClick={() => console.log("Load More")}
+          >
+            Load More
+          </div>
+        </div>
       </Container>
     </Layout>
   );
