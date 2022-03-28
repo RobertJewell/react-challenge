@@ -1,14 +1,29 @@
 import { db } from "../config/firebase.config";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+	collection,
+	getDocs,
+	limit,
+	orderBy,
+	query,
+	startAfter,
+} from "firebase/firestore";
+import { IPost } from "../types/post";
 
-export const getPosts = async () => {
-  const citiesRef = collection(db, "posts");
+export const getPosts = async (startPoint: string, maxItems: number) => {
+	const citiesRef = collection(db, "posts");
 
-  const q = await getDocs(query(citiesRef, orderBy("title"), limit(3)));
+	const q = await getDocs(
+		query(
+			citiesRef,
+			orderBy("title"),
+			startAfter(startPoint || ""),
+			limit(maxItems)
+		)
+	);
 
-  const posts = q.docs.map((doc) => {
-    return doc.data() as any;
-  });
+	const posts = q.docs.map((doc) => {
+		return doc.data() as IPost;
+	});
 
-  return posts;
+	return posts;
 };

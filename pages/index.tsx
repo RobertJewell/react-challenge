@@ -1,4 +1,4 @@
-import type { InferGetStaticPropsType } from "next";
+import { useState } from "react";
 import Head from "next/head";
 import Container from "../components/container";
 import Layout from "../components/layout";
@@ -6,48 +6,66 @@ import Intro from "../components/intro";
 import HeroPost from "../components/hero-post";
 import MoreStories from "../components/more-stories";
 import { getPosts } from "../fetchData/getPosts";
+import { IPost } from "../types/post";
+import { numberPagesToLoad } from "../constants/blog";
 
-const Index = ({
-  allPosts,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const heroPost = allPosts[0];
-  const morePosts = allPosts.slice(1);
+interface IPostsArray {
+	allPosts: IPost[];
+}
 
-  return (
-    <Layout>
-      <Head>
-        <title>Next.js Blog Example with Firebase</title>
-      </Head>
-      <Container>
-        <Intro />
-        {heroPost && (
-          <HeroPost
-            title={heroPost.title}
-            slug={heroPost.slug}
-            excerpt={heroPost.excerpt}
-          />
-        )}
-        {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+const Index: React.FC<IPostsArray> = ({ allPosts }) => {
+	const [allPostsArray, setAllPostsArray] = useState<IPost[]>(allPosts);
+	const [postsShown, setPostsShown] = useState(allPostsArray.length - 2);
+	const heroPost: IPost = allPostsArray[0];
+	const morePosts: IPost[] = allPostsArray.slice(1, postsShown);
 
-        <div className="flex mb-16">
-          <div
-            className="inline-block px-8 py-3 mx-auto text-white bg-black rounded-md cursor-pointer"
-            onClick={() => console.log("Load More")}
-          >
-            Load More
-          </div>
-        </div>
-      </Container>
-    </Layout>
-  );
+	const loadMorePosts = async () => {
+		setPostsShown(postsShown + numberPagesToLoad);
+		const lastpostTitle = allPostsArray[allPostsArray.length - 1].title;
+		const newPosts = await getPosts(lastpostTitle, numberPagesToLoad);
+		setAllPostsArray([...allPostsArray, ...newPosts]);
+	};
+
+	return (
+		<Layout>
+			<Head>
+				<title>Next.js Blog Example with Firebase</title>
+			</Head>
+			<Container>
+				<Intro />
+				{heroPost && (
+					<HeroPost
+						title={heroPost.title}
+						slug={heroPost.slug}
+						excerpt={heroPost.excerpt}
+					/>
+				)}
+				{morePosts.length > 0 && <MoreStories posts={morePosts} />}
+				{postsShown <= allPostsArray.length ? (
+					<div className="flex mb-16">
+						<div
+							className="inline-block px-8 py-3 mx-auto text-white bg-black rounded-md cursor-pointer"
+							onClick={loadMorePosts}
+						>
+							Load More
+						</div>
+					</div>
+				) : (
+					<p className="w-full mt-6 mb-12 text-center">
+						{"You're all caught up! 🎉"}
+					</p>
+				)}
+			</Container>
+		</Layout>
+	);
 };
 
 export default Index;
 
 export const getStaticProps = async () => {
-  const allPosts = await getPosts();
+	const allPosts = await getPosts("", 5);
 
-  return {
-    props: { allPosts },
-  };
+	return {
+		props: { allPosts },
+	};
 };
