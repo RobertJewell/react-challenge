@@ -15,7 +15,10 @@ interface IPostsArray {
 
 const Index: React.FC<IPostsArray> = ({ allPosts }) => {
 	const [allPostsArray, setAllPostsArray] = useState<IPost[]>(allPosts);
-	const [postsShown, setPostsShown] = useState(allPostsArray.length - 2);
+	const [postsShown, setPostsShown] = useState(
+		allPostsArray.length - numberPagesToLoad
+	);
+
 	const heroPost: IPost = allPostsArray[0];
 	const morePosts: IPost[] = allPostsArray.slice(1, postsShown);
 
@@ -63,7 +66,8 @@ const Index: React.FC<IPostsArray> = ({ allPosts }) => {
 export default Index;
 
 export const getStaticProps = async () => {
-	const allPosts = await getPosts("", 5);
+	const numberPostsToLoad = 3 + numberPagesToLoad;
+	const allPosts = await getPosts("", numberPostsToLoad);
 
 	return {
 		props: { allPosts },

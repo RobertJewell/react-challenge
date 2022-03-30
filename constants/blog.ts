@@ -1,1 +1,1 @@
-export const numberPagesToLoad = 2
+export const numberPagesToLoad = 2;
