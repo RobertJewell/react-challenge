@@ -21,7 +21,7 @@ enum currentFormState {
 	"submitted",
 }
 
-const createPost = () => {
+const CreatePost = () => {
 	const [formVisibility, setFormVisibility] = useState(
 		currentFormState.visible
 	);
@@ -92,7 +92,6 @@ const createPost = () => {
 									}`}
 									id="title"
 									type="name"
-									// name="title"
 									placeholder=""
 									{...register("title")}
 								/>
@@ -110,7 +109,6 @@ const createPost = () => {
 								<input
 									className="block w-full px-4 py-3 mb-2 leading-tight text-gray-800 border-2 border-black appearance-none rounded-xl focus:outline-none"
 									type="text"
-									// name="slug"
 									id="slug"
 									autoComplete="slug"
 									{...register("slug")}
@@ -128,7 +126,6 @@ const createPost = () => {
 								<input
 									className="block w-full px-4 py-3 mb-2 leading-tight text-gray-800 border-2 border-black appearance-none rounded-xl focus:outline-none"
 									type="text"
-									// name="slug"
 									id="excerpt"
 									autoComplete="excerpt"
 									{...register("excerpt")}
@@ -145,7 +142,6 @@ const createPost = () => {
 										errors.content ? "is-invalid" : ""
 									}`}
 									id="content"
-									// name="content"
 									{...register("content")}
 								></textarea>
 								<div className="text-red-600">{errors.content?.message}</div>
@@ -167,4 +163,4 @@ const createPost = () => {
 	);
 };
 
-export default createPost;
+export default CreatePost;
