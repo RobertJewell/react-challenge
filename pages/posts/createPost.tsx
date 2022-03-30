@@ -34,7 +34,8 @@ const createPost = () => {
 	const formOptions = { resolver: yupResolver(validationSchema) };
 
 	// get functions to build form with useForm() hook
-	const { register, handleSubmit, formState, reset } = useForm(formOptions);
+	const { register, handleSubmit, formState, reset } =
+		useForm<IPostSubmission>(formOptions);
 	const { errors } = formState;
 
 	const onSubmit: SubmitHandler<IPostSubmission> = async (data) => {
@@ -44,12 +45,10 @@ const createPost = () => {
 		//Replace new line characters with HTML for email
 		const contentWithBreaks = data.content.replace(/\n/g, "<br>");
 
-		const articleSubmission = {
+		await setDoc(doc(db, "posts", data.slug), {
 			...data,
 			content: contentWithBreaks,
-		};
-
-		await setDoc(doc(db, "posts", data.slug), articleSubmission);
+		});
 
 		reset();
 
@@ -89,7 +88,7 @@ const createPost = () => {
 								</label>
 								<input
 									className={`block w-full px-4 py-3 mb-2 leading-tight text-gray-800 border-black border-2 rounded-xl focus:outline-none focus:border-accent-main  ${
-										errors.name ? "is-invalid" : ""
+										errors.title ? "is-invalid" : ""
 									}`}
 									id="title"
 									type="name"
@@ -143,7 +142,7 @@ const createPost = () => {
 								</label>
 								<textarea
 									className={`block w-full h-48 px-4 py-2 mb-2 leading-tight text-gray-800 border-black border-2  appearance-none resize-none rounded-xl  focus:outline-none  ${
-										errors.message ? "is-invalid" : ""
+										errors.content ? "is-invalid" : ""
 									}`}
 									id="content"
 									// name="content"
